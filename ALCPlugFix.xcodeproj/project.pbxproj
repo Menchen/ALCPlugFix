@@ -103,8 +103,9 @@
 		4CE3282D1DCA9A59002A53ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = io.github.menchen;
 				LastUpgradeCheck = 0810;
-				ORGANIZATIONNAME = "Oleksandr Stoyevskyy";
+				ORGANIZATIONNAME = Menchen;
 				TargetAttributes = {
 					4CE328341DCA9A59002A53ED = {
 						CreatedOnToolsVersion = 8.1;
@@ -187,6 +188,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				VALID_ARCHS = (
+					x86_64,
+				);
 			};
 			name = Debug;
 		};
@@ -227,6 +231,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				VALID_ARCHS = (
+					x86_64,
+				);
 			};
 			name = Release;
 		};

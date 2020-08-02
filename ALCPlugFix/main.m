@@ -106,29 +106,16 @@ NSString *binPrefix;
 # pragma mark Setup the daemon
 
 // Seconds runloop runs before performing work in second.
-#define kRunLoopWaitTime 14400.0 // 4hour
+#define kRunLoopWaitTime 8*3600.0
 
 BOOL keepRunning = TRUE;
-CFRunLoopRef runLoopRef;
 
 void sigHandler(int signo)
 {
     NSLog(@"sigHandler: Received signal %d", signo);
-
-    switch (signo) {
-        case SIGTERM:
-        case SIGKILL:
-        case SIGQUIT:
-        case SIGHUP:
-        case SIGINT:
-            // Now handle more signal to quit
-            NSLog(@"Exiting...");
-            keepRunning = FALSE;
-            CFRunLoopStop(CFRunLoopGetCurrent()); // Kill current thread so we don't need to wait until next runloop call
-            break;
-        default:
-            break;
-    }
+    NSLog(@"Exiting...");
+    keepRunning = FALSE;
+    CFRunLoopStop(CFRunLoopGetCurrent()); // Kill current thread so we don't need to wait until next runloop call
 }
 
 void fixAudio(){
@@ -144,8 +131,8 @@ void fixAudio(){
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
 
-        NSLog(@"ALCPlugFix v1.4");
-        keepRunning = false;
+        NSLog(@"ALCPlugFix v1.4.1");
+        keepRunning = true;
 
         binPrefix = @"";
 
@@ -153,6 +140,8 @@ int main(int argc, const char * argv[]) {
         signal(SIGTERM, sigHandler);
         signal(SIGKILL, sigHandler);
         signal(SIGQUIT, sigHandler);
+        signal(SIGINT, sigHandler);
+        signal(SIGABRT, sigHandler);
         signal(SIGINT, sigHandler);
 
         ALCPlugFix *task = [[ALCPlugFix alloc] init];
@@ -210,10 +199,10 @@ int main(int argc, const char * argv[]) {
 
         // Fix at boot
         fixAudio();
-        do{
+//        do{
             [task performWork];
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, kRunLoopWaitTime, false);
-        }while (keepRunning);
+//        }while (keepRunning);
 //        [task release];
 
         OSStatus removeStatus = AudioObjectRemovePropertyListenerBlock(defaultDevice, &sourceAddr, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),audioObjectPropertyListenerBlock);
